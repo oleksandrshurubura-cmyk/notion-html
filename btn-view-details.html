@@ -8,13 +8,36 @@
   .btn {
     display: inline-flex; align-items: center;
     padding: 6px 12px; border-radius: 4px; border: none;
-    background: #409eff; color: white;
-    font-size: 12px; cursor: default;
-    box-shadow: 0 1px 3px rgba(64,158,255,0.3);
+    background: #409eff; color: white; font-size: 12px; cursor: pointer;
+    transition: transform 0.1s;
   }
+  .btn:active { transform: scale(0.97); }
+  .card {
+    display: none; margin-top: 10px; border: 1px solid #e4e7ed; border-radius: 6px;
+    padding: 12px; background: white; width: 260px; font-size: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06); animation: fadein 0.2s ease;
+  }
+  @keyframes fadein { from { opacity:0; transform: translateY(-4px); } to { opacity:1; transform: translateY(0); } }
+  .row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #f5f7fa; color: #606266; }
+  .row:last-child { border-bottom: none; }
+  .label { color: #909399; }
+  .tag { padding: 2px 6px; border-radius: 3px; background: #f0f9eb; color: #67c23a; border: 1px solid #b3e19d; font-size: 11px; }
 </style>
 </head>
 <body>
-  <button class="btn">View Details</button>
+  <button class="btn" onclick="toggle()">View Details</button>
+  <div class="card" id="card">
+    <div class="row"><span class="label">Task ID</span><span>a3f9...c12e</span></div>
+    <div class="row"><span class="label">Type</span><span>regenerate_scene</span></div>
+    <div class="row"><span class="label">Status</span><span class="tag">SUCCESS</span></div>
+    <div class="row"><span class="label">Created</span><span>23 Mar, 14:32</span></div>
+    <div class="row"><span class="label">Duration</span><span>1m 42s</span></div>
+  </div>
+  <script>
+    function toggle() {
+      const c = document.getElementById('card');
+      c.style.display = c.style.display === 'block' ? 'none' : 'block';
+    }
+  </script>
 </body>
 </html>

@@ -5,23 +5,44 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: transparent; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 6px; }
-  .wrap { display: inline-flex; align-items: center; gap: 8px; cursor: default; }
+  .wrap { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
   .switch {
-    width: 40px; height: 20px; background: #67c23a;
-    border-radius: 10px; position: relative; flex-shrink: 0;
+    width: 40px; height: 20px; border-radius: 10px; position: relative;
+    transition: background 0.25s; background: #67c23a;
   }
   .switch::after {
     content: ''; width: 16px; height: 16px; background: white;
-    border-radius: 50%; position: absolute; top: 2px; right: 2px;
+    border-radius: 50%; position: absolute; top: 2px;
+    transition: left 0.25s; left: 22px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.2);
   }
+  .switch.off { background: #dcdfe6; }
+  .switch.off::after { left: 2px; }
   .label { font-size: 13px; color: #606266; }
+  .hint { margin-top: 6px; font-size: 12px; animation: fadein 0.2s ease; }
+  .hint.on { color: #67c23a; }
+  .hint.off { color: #909399; }
+  @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="switch"></div>
+  <div class="wrap" onclick="toggle()">
+    <div class="switch" id="sw"></div>
     <span class="label">Include captions</span>
   </div>
+  <div class="hint on" id="hint">✅ Субтитри будуть автоматично додані на фінальне відео</div>
+  <script>
+    let on = true;
+    function toggle() {
+      on = !on;
+      const sw = document.getElementById('sw');
+      const hint = document.getElementById('hint');
+      sw.className = 'switch' + (on ? '' : ' off');
+      hint.className = 'hint ' + (on ? 'on' : 'off');
+      hint.textContent = on
+        ? '✅ Субтитри будуть автоматично додані на фінальне відео'
+        : '⚠️ Без субтитрів — кожна сцена повинна мати clean відео';
+    }
+  </script>
 </body>
 </html>

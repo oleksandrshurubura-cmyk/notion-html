@@ -6,15 +6,41 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: transparent; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 6px; }
   .btn {
-    display: inline-flex; align-items: center;
+    display: inline-flex; align-items: center; gap: 6px;
     padding: 10px 20px; border-radius: 4px;
-    border: 1px solid #dcdfe6;
-    background: white; color: #606266;
-    font-size: 14px; cursor: default;
+    border: 1px solid #dcdfe6; background: white; color: #606266;
+    font-size: 14px; cursor: pointer;
+    transition: transform 0.1s, border-color 0.15s, color 0.15s;
+  }
+  .btn:hover { border-color: #f56c6c; color: #f56c6c; }
+  .btn:active { transform: scale(0.97); }
+  .confirm {
+    display: none; margin-top: 8px; font-size: 12px; color: #f56c6c;
+    animation: shake 0.3s ease;
+  }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
   }
 </style>
 </head>
 <body>
-  <button class="btn">Reset</button>
+  <button class="btn" onclick="tryReset()">Reset</button>
+  <div class="confirm" id="confirm">💥 Всі сцени видалено. Починаємо з чистого листа.</div>
+  <script>
+    let clicks = 0;
+    function tryReset() {
+      clicks++;
+      const c = document.getElementById('confirm');
+      c.style.display = 'block';
+      c.textContent = clicks === 1
+        ? '⚠️ Увага — це видалить всі сцени! Клікни ще раз щоб підтвердити.'
+        : '💥 Всі сцени видалено. Починаємо з чистого листа.';
+      if (clicks >= 2) clicks = 0;
+      clearTimeout(window._t);
+      window._t = setTimeout(() => { c.style.display = 'none'; }, 2500);
+    }
+  </script>
 </body>
 </html>

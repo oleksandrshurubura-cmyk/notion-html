@@ -8,14 +8,60 @@
   .btn {
     display: inline-flex; align-items: center; gap: 5px;
     padding: 8px 16px; border-radius: 4px; border: none;
-    background: #409eff; color: white;
-    font-size: 13px; cursor: default;
+    background: #409eff; color: white; font-size: 13px; cursor: pointer;
     box-shadow: 0 1px 3px rgba(64,158,255,0.3);
+    transition: transform 0.1s;
   }
-  .count { opacity: 0.85; }
+  .btn:active { transform: scale(0.97); }
+  .log { display: none; margin-top: 8px; font-size: 12px; color: #606266; display: flex; flex-direction: column; gap: 4px; max-width: 260px; }
+  .log-item { opacity: 0; transform: translateX(-6px); transition: all 0.3s ease; display: flex; align-items: center; gap: 6px; }
+  .log-item.show { opacity: 1; transform: translateX(0); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: #c0c4cc; flex-shrink: 0; }
+  .dot.running { background: #409eff; animation: pulse 0.8s infinite; }
+  .dot.done { background: #67c23a; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
 </style>
 </head>
 <body>
-  <button class="btn">Generate all <span class="count">(4)</span></button>
+  <button class="btn" id="btn" onclick="generate()">Generate all <span style="opacity:.85">(4)</span></button>
+  <div class="log" id="log">
+    <div class="log-item" id="s1"><div class="dot" id="d1"></div><span id="t1">Сцена 1</span></div>
+    <div class="log-item" id="s2"><div class="dot" id="d2"></div><span id="t2">Сцена 2</span></div>
+    <div class="log-item" id="s3"><div class="dot" id="d3"></div><span id="t3">Сцена 3</span></div>
+    <div class="log-item" id="s4"><div class="dot" id="d4"></div><span id="t4">Сцена 4</span></div>
+  </div>
+  <script>
+    let running = false;
+    function generate() {
+      if (running) return;
+      running = true;
+      document.getElementById('log').style.display = 'flex';
+      document.getElementById('btn').textContent = '⚡ Генеруємо...';
+      const steps = [
+        { delay: 100, si: 's1', di: 'd1', ti: 't1', msg: 'Сцена 1 — в черзі...' },
+        { delay: 400, si: 's2', di: 'd2', ti: 't2', msg: 'Сцена 2 — в черзі...' },
+        { delay: 700, si: 's3', di: 'd3', ti: 't3', msg: 'Сцена 3 — в черзі...' },
+        { delay: 1000, si: 's4', di: 'd4', ti: 't4', msg: 'Сцена 4 — в черзі...' },
+        { delay: 1600, si: 's1', di: 'd1', ti: 't1', msg: '✅ Сцена 1 готова', done: 'd1' },
+        { delay: 2100, si: 's2', di: 'd2', ti: 't2', msg: '✅ Сцена 2 готова', done: 'd2' },
+        { delay: 2500, si: 's3', di: 'd3', ti: 't3', msg: '✅ Сцена 3 готова', done: 'd3' },
+        { delay: 2900, si: 's4', di: 'd4', ti: 't4', msg: '✅ Сцена 4 готова', done: 'd4' },
+      ];
+      steps.forEach(({ delay, si, di, ti, msg, done }) => {
+        setTimeout(() => {
+          document.getElementById(si).classList.add('show');
+          document.getElementById(ti).textContent = msg;
+          if (done) document.getElementById(di).className = 'dot done';
+          else document.getElementById(di).className = 'dot running';
+          if (si === 's4' && done) {
+            setTimeout(() => {
+              document.getElementById('btn').innerHTML = 'Generate all <span style="opacity:.85">(4)</span>';
+              running = false;
+            }, 400);
+          }
+        }, delay);
+      });
+    }
+  </script>
 </body>
 </html>

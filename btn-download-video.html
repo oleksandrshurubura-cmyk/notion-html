@@ -6,15 +6,33 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: transparent; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 6px; }
   .btn {
-    display: inline-flex; align-items: center;
+    display: inline-flex; align-items: center; gap: 5px;
     padding: 6px 12px; border-radius: 4px; border: none;
-    background: #67c23a; color: white;
-    font-size: 12px; cursor: default;
-    box-shadow: 0 1px 3px rgba(103,194,58,0.3);
+    background: #67c23a; color: white; font-size: 12px; cursor: pointer;
+    transition: transform 0.1s;
   }
+  .btn:active { transform: scale(0.97); }
+  .msg { display: none; margin-top: 6px; font-size: 12px; animation: fadein 0.2s ease; }
+  @keyframes fadein { from { opacity:0; } to { opacity:1; } }
 </style>
 </head>
 <body>
-  <button class="btn">Download Video</button>
+  <button class="btn" id="btn" onclick="dl()">⬇ Download Video</button>
+  <div class="msg" id="msg"></div>
+  <script>
+    function dl() {
+      const btn = document.getElementById('btn');
+      const msg = document.getElementById('msg');
+      btn.textContent = '⏳ Готуємо файл...';
+      msg.style.display = 'none';
+      setTimeout(() => {
+        btn.textContent = '✅ Завантажено!';
+        msg.style.display = 'block';
+        msg.style.color = '#67c23a';
+        msg.textContent = 'Файл збережено в папку Downloads 🎬';
+        setTimeout(() => { btn.innerHTML = '⬇ Download Video'; }, 2500);
+      }, 1200);
+    }
+  </script>
 </body>
 </html>

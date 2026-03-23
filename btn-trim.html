@@ -8,13 +8,64 @@
   .btn {
     display: inline-flex; align-items: center; gap: 5px;
     padding: 6px 12px; border-radius: 4px; border: none;
-    background: #409eff; color: white;
-    font-size: 12px; cursor: default;
-    box-shadow: 0 1px 3px rgba(64,158,255,0.3);
+    background: #409eff; color: white; font-size: 12px; cursor: pointer;
+    transition: transform 0.1s;
+  }
+  .btn:active { transform: scale(0.97); }
+  .modal {
+    display: none; margin-top: 10px; border: 1px solid #e4e7ed; border-radius: 6px;
+    padding: 12px; background: white; width: 260px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08); animation: fadein 0.2s ease;
+  }
+  @keyframes fadein { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+  .modal-title { font-size: 12px; font-weight: 600; color: #303133; margin-bottom: 10px; }
+  .track { position: relative; height: 6px; background: #e4e7ed; border-radius: 3px; margin: 16px 4px; }
+  .fill { position: absolute; left: 20%; right: 20%; height: 100%; background: #409eff; border-radius: 3px; }
+  .handle {
+    position: absolute; top: 50%; width: 14px; height: 14px; background: white;
+    border: 2px solid #409eff; border-radius: 50%; transform: translateY(-50%);
+    cursor: pointer; transition: transform 0.1s;
+  }
+  .handle:hover { transform: translateY(-50%) scale(1.2); }
+  .left { left: calc(20% - 7px); }
+  .right { right: calc(20% - 7px); }
+  .times { display: flex; justify-content: space-between; font-size: 11px; color: #909399; margin-top: 4px; }
+  .actions { display: flex; gap: 8px; margin-top: 10px; }
+  .save-btn {
+    flex: 1; padding: 6px; border-radius: 4px; border: none;
+    background: #409eff; color: white; font-size: 12px; cursor: pointer;
+  }
+  .cancel-btn {
+    flex: 1; padding: 6px; border-radius: 4px; font-size: 12px; cursor: pointer;
+    border: 1px solid #dcdfe6; background: white; color: #606266;
   }
 </style>
 </head>
 <body>
-  <button class="btn">✂ Trim</button>
+  <button class="btn" onclick="openTrim()">✂ Trim</button>
+  <div class="modal" id="modal">
+    <div class="modal-title">✂️ Обрізка сцени</div>
+    <div class="track">
+      <div class="fill"></div>
+      <div class="handle left"></div>
+      <div class="handle right"></div>
+    </div>
+    <div class="times"><span>0:02</span><span>0:14</span></div>
+    <div class="actions">
+      <button class="save-btn" onclick="save()">Зберегти</button>
+      <button class="cancel-btn" onclick="close()">Скасувати</button>
+    </div>
+  </div>
+  <script>
+    function openTrim() {
+      document.getElementById('modal').style.display = 'block';
+    }
+    function save() {
+      document.getElementById('modal').style.display = 'none';
+    }
+    function close() {
+      document.getElementById('modal').style.display = 'none';
+    }
+  </script>
 </body>
 </html>

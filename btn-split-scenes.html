@@ -8,13 +8,52 @@
   .btn {
     display: inline-flex; align-items: center; gap: 6px;
     padding: 10px 20px; border-radius: 4px; border: none;
-    background: #67c23a; color: white;
-    font-size: 14px; cursor: default;
+    background: #67c23a; color: white; font-size: 14px; cursor: pointer;
     box-shadow: 0 1px 3px rgba(103,194,58,0.3);
+    transition: transform 0.1s;
   }
+  .btn:active { transform: scale(0.97); }
+  .btn.loading { background: #85ce61; cursor: not-allowed; }
+  .bar-wrap { display: none; margin-top: 8px; background: #e9e9eb; border-radius: 4px; overflow: hidden; height: 6px; width: 220px; }
+  .bar { height: 100%; background: #67c23a; border-radius: 4px; width: 0%; transition: width 0.1s linear; }
+  .msg { display: none; font-size: 12px; color: #606266; margin-top: 6px; }
 </style>
 </head>
 <body>
-  <button class="btn">Split scenes from creo</button>
+  <button class="btn" id="btn" onclick="run()">✂️ Split scenes from creo</button>
+  <div class="bar-wrap" id="barWrap"><div class="bar" id="bar"></div></div>
+  <div class="msg" id="msg"></div>
+  <script>
+    const messages = ['🔍 Аналізуємо відео...', '✂️ Знайдено зміну сцени на 0:04', '✂️ Знайдено зміну сцени на 0:11', '✂️ Знайдено зміну сцени на 0:19', '🎉 Готово! Створено 4 сцени'];
+    let running = false;
+    function run() {
+      if (running) return;
+      running = true;
+      const btn = document.getElementById('btn');
+      btn.classList.add('loading');
+      btn.textContent = '⏳ Splitting...';
+      document.getElementById('barWrap').style.display = 'block';
+      document.getElementById('msg').style.display = 'block';
+      let step = 0, progress = 0;
+      const interval = setInterval(() => {
+        progress = Math.min(progress + 4, 100);
+        document.getElementById('bar').style.width = progress + '%';
+        if (step < messages.length && progress >= step * 25) {
+          document.getElementById('msg').textContent = messages[step++];
+        }
+        if (progress >= 100) {
+          clearInterval(interval);
+          btn.classList.remove('loading');
+          btn.textContent = '✂️ Split scenes from creo';
+          running = false;
+          setTimeout(() => {
+            document.getElementById('barWrap').style.display = 'none';
+            document.getElementById('msg').style.display = 'none';
+            document.getElementById('bar').style.width = '0%';
+          }, 2000);
+        }
+      }, 60);
+    }
+  </script>
 </body>
 </html>

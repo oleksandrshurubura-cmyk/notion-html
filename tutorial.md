@@ -25,7 +25,7 @@ Create Scenes        Edit Scenes         Generate Video
 
 ### Завантаження відео
 
-<!-- EMBED: https://oleksandrshurubura-cmyk.github.io/notion-html/btn-select-creo-file.html -->
+> 🔗 EMBED → [https://oleksandrshurubura-cmyk.github.io/notion-html/btn-select-creo-file.html](https://oleksandrshurubura-cmyk.github.io/notion-html/btn-select-creo-file.html)
 
 Кнопка **Select Creo File** відкриває вікно вибору файлу. Завантаж будь-яке відео (MP4, MOV тощо). Після вибору файлу — натискай **Split scenes from creo**.
 
@@ -38,7 +38,7 @@ Create Scenes        Edit Scenes         Generate Video
 
 Обери формат перед сплітингом — він застосовується до всіх сцен.
 
-<!-- EMBED: https://oleksandrshurubura-cmyk.github.io/notion-html/radio-aspect-ratio.html -->
+> 🔗 EMBED → [https://oleksandrshurubura-cmyk.github.io/notion-html/radio-aspect-ratio.html](https://oleksandrshurubura-cmyk.github.io/notion-html/radio-aspect-ratio.html)
 
 | Кнопка | Формат | Де використовується |
 |---|---|---|
@@ -50,15 +50,15 @@ Create Scenes        Edit Scenes         Generate Video
 
 ### Кнопки дій
 
-<!-- EMBED: https://oleksandrshurubura-cmyk.github.io/notion-html/btn-split-scenes.html -->
+> 🔗 EMBED → [https://oleksandrshurubura-cmyk.github.io/notion-html/btn-split-scenes.html](https://oleksandrshurubura-cmyk.github.io/notion-html/btn-split-scenes.html)
 
 **Split scenes from creo** — запускає розбивку завантаженого відео на сцени. Кнопка активна тільки коли файл вибрано. Під час процесу показується прогрес-бар.
 
-<!-- EMBED: https://oleksandrshurubura-cmyk.github.io/notion-html/btn-add-empty-scene.html -->
+> 🔗 EMBED → [https://oleksandrshurubura-cmyk.github.io/notion-html/btn-add-empty-scene.html](https://oleksandrshurubura-cmyk.github.io/notion-html/btn-add-empty-scene.html)
 
 **Add Empty Scene** — додає порожню сцену без відео. Використовуй якщо хочеш створити сцену вручну — завантажиш відео або зображення пізніше на кроці Edit.
 
-<!-- EMBED: https://oleksandrshurubura-cmyk.github.io/notion-html/btn-reset.html -->
+> 🔗 EMBED → [https://oleksandrshurubura-cmyk.github.io/notion-html/btn-reset.html](https://oleksandrshurubura-cmyk.github.io/notion-html/btn-reset.html)
 
 **Reset** — видаляє всі сцени і скидає форму. Використовуй якщо хочеш почати спочатку з іншим відео.
 
@@ -135,15 +135,15 @@ Create Scenes        Edit Scenes         Generate Video
 
 ### Кнопки у списку сцен
 
-<!-- EMBED: https://oleksandrshurubura-cmyk.github.io/notion-html/btn-generate-all.html -->
+> 🔗 EMBED → [https://oleksandrshurubura-cmyk.github.io/notion-html/btn-generate-all.html](https://oleksandrshurubura-cmyk.github.io/notion-html/btn-generate-all.html)
 
 **Generate all (N)** — запускає генерацію всіх сцен які мають заповнений контент (відео або зображення + войсовер). У дужках — кількість готових до генерації сцен. Після натискання система відправляє задачі на сервер. Кожна сцена генерується окремо — можеш продовжувати роботу поки вони обробляються.
 
-<!-- EMBED: https://oleksandrshurubura-cmyk.github.io/notion-html/btn-generate-selected.html -->
+> 🔗 EMBED → [https://oleksandrshurubura-cmyk.github.io/notion-html/btn-generate-selected.html](https://oleksandrshurubura-cmyk.github.io/notion-html/btn-generate-selected.html)
 
 **Generate selected (N)** — те саме що Generate all, але тільки для вибраних сцен. Щоб вибрати сцени — постав галочку на кожній потрібній. У дужках — кількість вибраних готових сцен.
 
-<!-- EMBED: https://oleksandrshurubura-cmyk.github.io/notion-html/btn-backup-scenes.html -->
+> 🔗 EMBED → [https://oleksandrshurubura-cmyk.github.io/notion-html/btn-backup-scenes.html](https://oleksandrshurubura-cmyk.github.io/notion-html/btn-backup-scenes.html)
 
 **Backup Scenes** — зберігає поточний стан всіх сцен в резервну копію в браузері. Використовуй перед великими змінами. При наступному відкритті сторінки сцени автоматично відновляться.
 
@@ -151,7 +151,7 @@ Create Scenes        Edit Scenes         Generate Video
 
 ### Trim (обрізка сцени)
 
-<!-- EMBED: https://oleksandrshurubura-cmyk.github.io/notion-html/btn-trim.html -->
+> 🔗 EMBED → [https://oleksandrshurubura-cmyk.github.io/notion-html/btn-trim.html](https://oleksandrshurubura-cmyk.github.io/notion-html/btn-trim.html)
 
 **Trim** — відкриває модальне вікно де можна обрізати відео сцени — вибрати початок і кінець фрагменту. Зміни зберігаються тільки для цієї сцени.
 
@@ -175,7 +175,7 @@ Create Scenes        Edit Scenes         Generate Video
 
 ### Include Captions
 
-<!-- EMBED: https://oleksandrshurubura-cmyk.github.io/notion-html/toggle-captions.html -->
+> 🔗 EMBED → [https://oleksandrshurubura-cmyk.github.io/notion-html/toggle-captions.html](https://oleksandrshurubura-cmyk.github.io/notion-html/toggle-captions.html)
 
 Автоматично додає субтитри на фінальне відео. Субтитри генеруються на основі войсоверу кожної сцени.
 
@@ -196,7 +196,7 @@ Create Scenes        Edit Scenes         Generate Video
 
 ### Merge Scenes
 
-<!-- EMBED: https://oleksandrshurubura-cmyk.github.io/notion-html/btn-merge-scenes.html -->
+> 🔗 EMBED → [https://oleksandrshurubura-cmyk.github.io/notion-html/btn-merge-scenes.html](https://oleksandrshurubura-cmyk.github.io/notion-html/btn-merge-scenes.html)
 
 Запускає збирання фінального відео. Система:
 1. Завантажує всі матеріали на сервер
@@ -212,7 +212,7 @@ Create Scenes        Edit Scenes         Generate Video
 
 ## 🔧 Task Details (кнопка у верхній панелі)
 
-<!-- EMBED: https://oleksandrshurubura-cmyk.github.io/notion-html/dropdown-task-details.html -->
+> 🔗 EMBED → [https://oleksandrshurubura-cmyk.github.io/notion-html/dropdown-task-details.html](https://oleksandrshurubura-cmyk.github.io/notion-html/dropdown-task-details.html)
 
 Кнопка **Task Details** з'являється у правій частині верхньої панелі CreoBuilder після того як були запущені будь-які задачі.
 
@@ -251,7 +251,7 @@ Tasks — це **архів і журнал** всіх задач які ти к
 
 ### Статуси задач
 
-<!-- EMBED: https://oleksandrshurubura-cmyk.github.io/notion-html/status-tags.html -->
+> 🔗 EMBED → [https://oleksandrshurubura-cmyk.github.io/notion-html/status-tags.html](https://oleksandrshurubura-cmyk.github.io/notion-html/status-tags.html)
 
 | Статус | Що означає |
 |---|---|
@@ -271,11 +271,11 @@ Tasks — це **архів і журнал** всіх задач які ти к
 - **Час обробки** — скільки тривала задача
 - **Статус** — з кольоровою позначкою
 
-<!-- EMBED: https://oleksandrshurubura-cmyk.github.io/notion-html/btn-view-details.html -->
+> 🔗 EMBED → [https://oleksandrshurubura-cmyk.github.io/notion-html/btn-view-details.html](https://oleksandrshurubura-cmyk.github.io/notion-html/btn-view-details.html)
 
 **View Details** — перейти до повних деталей задачі.
 
-<!-- EMBED: https://oleksandrshurubura-cmyk.github.io/notion-html/btn-download-video.html -->
+> 🔗 EMBED → [https://oleksandrshurubura-cmyk.github.io/notion-html/btn-download-video.html](https://oleksandrshurubura-cmyk.github.io/notion-html/btn-download-video.html)
 
 **Download Video** — з'являється тільки для успішних задач де є відео.
 

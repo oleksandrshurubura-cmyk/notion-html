@@ -8,14 +8,34 @@
   .btn {
     display: inline-flex; align-items: center; gap: 5px;
     padding: 8px 16px; border-radius: 4px;
-    border: 1px solid #409eff;
-    background: white; color: #409eff;
-    font-size: 13px; cursor: default;
+    border: 1px solid #409eff; background: white; color: #409eff;
+    font-size: 13px; cursor: pointer;
+    transition: transform 0.1s, background 0.15s;
   }
-  .count { opacity: 0.85; }
+  .btn:hover { background: #ecf5ff; }
+  .btn:active { transform: scale(0.97); }
+  .toast {
+    display: none; margin-top: 8px; font-size: 12px; color: #409eff;
+    animation: fadein 0.2s ease;
+  }
+  @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
 </style>
 </head>
 <body>
-  <button class="btn">Generate selected <span class="count">(2)</span></button>
+  <button class="btn" onclick="run()">Generate selected <span style="opacity:.85">(2)</span></button>
+  <div class="toast" id="t"></div>
+  <script>
+    const msgs = ['⚡ Запускаємо генерацію 2 вибраних сцен...', '✅ Сцена 2 готова', '✅ Сцена 4 готова — все оброблено!'];
+    let i = 0, running = false;
+    function run() {
+      if (running) return;
+      running = true;
+      const t = document.getElementById('t');
+      t.style.display = 'block';
+      t.textContent = msgs[0];
+      setTimeout(() => { t.textContent = msgs[1]; }, 1200);
+      setTimeout(() => { t.textContent = msgs[2]; running = false; }, 2200);
+    }
+  </script>
 </body>
 </html>
