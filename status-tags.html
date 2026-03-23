@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: transparent; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 6px; }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .tag {
+    display: inline-block; padding: 3px 9px; border-radius: 3px;
+    font-size: 12px; font-weight: 500; border: 1px solid;
+  }
+  .created  { background: #f4f4f5; color: #909399; border-color: #e9e9eb; }
+  .queued   { background: #fdf6ec; color: #e6a23c; border-color: #f5dab1; }
+  .success  { background: #f0f9eb; color: #67c23a; border-color: #b3e19d; }
+  .error    { background: #fef0f0; color: #f56c6c; border-color: #fbc4c4; }
+</style>
+</head>
+<body>
+  <div class="row">
+    <span class="tag created">CREATED</span>
+    <span class="tag queued">QUEUED</span>
+    <span class="tag success">SUCCESS</span>
+    <span class="tag error">ERROR</span>
+  </div>
+</body>
+</html>
