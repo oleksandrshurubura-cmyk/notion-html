@@ -5,67 +5,377 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: transparent; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 6px; }
-  .btn {
+
+  .open-btn {
     display: inline-flex; align-items: center; gap: 5px;
     padding: 6px 12px; border-radius: 4px; border: none;
     background: #409eff; color: white; font-size: 12px; cursor: pointer;
     transition: transform 0.1s;
   }
-  .btn:active { transform: scale(0.97); }
-  .modal {
-    display: none; margin-top: 10px; border: 1px solid #e4e7ed; border-radius: 6px;
-    padding: 12px; background: white; width: 260px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08); animation: fadein 0.2s ease;
+  .open-btn:active { transform: scale(0.97); }
+
+  /* DIALOG */
+  .dialog-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5); z-index: 100;
+    align-items: center; justify-content: center;
   }
-  @keyframes fadein { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
-  .modal-title { font-size: 12px; font-weight: 600; color: #303133; margin-bottom: 10px; }
-  .track { position: relative; height: 6px; background: #e4e7ed; border-radius: 3px; margin: 16px 4px; }
-  .fill { position: absolute; left: 20%; right: 20%; height: 100%; background: #409eff; border-radius: 3px; }
+  .dialog-overlay.open { display: flex; }
+  .dialog {
+    background: #1d1e20; border-radius: 8px; width: 680px; max-width: 96vw;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5); overflow: hidden;
+    animation: pop 0.2s ease;
+    font-size: 13px; color: #cfd3dc;
+  }
+  @keyframes pop { from { transform: scale(0.95); opacity:0; } to { transform: scale(1); opacity:1; } }
+
+  /* HEADER */
+  .dialog-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 20px; border-bottom: 1px solid #2d2f33;
+  }
+  .dialog-title { font-size: 15px; font-weight: 600; color: #e5eaf3; }
+  .close-x {
+    background: none; border: none; color: #909399; font-size: 18px; cursor: pointer; line-height: 1;
+    transition: color 0.15s;
+  }
+  .close-x:hover { color: #e5eaf3; }
+
+  /* BODY */
+  .dialog-body { padding: 16px 20px; display: flex; flex-direction: column; gap: 16px; }
+
+  /* VIDEO AREA */
+  .video-area {
+    background: #000; border-radius: 6px; height: 160px;
+    display: flex; align-items: center; justify-content: center;
+    color: #555; font-size: 13px; position: relative; overflow: hidden;
+  }
+  .video-placeholder { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .play-icon { font-size: 36px; opacity: 0.4; }
+
+  /* WAVEFORM SECTION */
+  .waveform-section { display: flex; flex-direction: column; gap: 6px; }
+  .waveform-legend {
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .waveform-title { font-size: 12px; color: #909399; }
+  .waveform-title-sub { color: #555; }
+  .legend-items { display: flex; align-items: center; gap: 5px; font-size: 12px; }
+  .dot-in { color: #67c23a; font-size: 10px; }
+  .dot-out { color: #f56c6c; font-size: 10px; }
+  .legend-sep { color: #444; margin: 0 2px; }
+  .split-label { color: #e6a23c; font-size: 11px; }
+
+  /* TIMELINE */
+  .timeline-wrap {
+    position: relative; height: 52px; background: #141516;
+    border-radius: 4px; overflow: visible; cursor: crosshair;
+    border: 1px solid #2d2f33;
+  }
+  .waveform-canvas { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 4px; }
+
+  /* TRIM REGION */
+  .trim-region {
+    position: absolute; top: 0; bottom: 0;
+    background: rgba(64,158,255,0.12);
+    border-left: 2px solid #67c23a;
+    border-right: 2px solid #f56c6c;
+    pointer-events: none;
+  }
+
+  /* HANDLES */
   .handle {
-    position: absolute; top: 50%; width: 14px; height: 14px; background: white;
-    border: 2px solid #409eff; border-radius: 50%; transform: translateY(-50%);
-    cursor: pointer; transition: transform 0.1s;
+    position: absolute; top: 0; bottom: 0; width: 12px;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: flex-start; cursor: ew-resize; z-index: 10;
   }
-  .handle:hover { transform: translateY(-50%) scale(1.2); }
-  .left { left: calc(20% - 7px); }
-  .right { right: calc(20% - 7px); }
-  .times { display: flex; justify-content: space-between; font-size: 11px; color: #909399; margin-top: 4px; }
-  .actions { display: flex; gap: 8px; margin-top: 10px; }
-  .save-btn {
-    flex: 1; padding: 6px; border-radius: 4px; border: none;
-    background: #409eff; color: white; font-size: 12px; cursor: pointer;
+  .handle-in { transform: translateX(-6px); }
+  .handle-out { transform: translateX(-6px); }
+  .handle-bar {
+    width: 3px; height: 100%; border-radius: 2px;
   }
-  .cancel-btn {
-    flex: 1; padding: 6px; border-radius: 4px; font-size: 12px; cursor: pointer;
-    border: 1px solid #dcdfe6; background: white; color: #606266;
+  .handle-in .handle-bar { background: #67c23a; }
+  .handle-out .handle-bar { background: #f56c6c; }
+  .handle-label {
+    position: absolute; top: -18px; font-size: 10px; font-weight: 700;
+    white-space: nowrap;
   }
+  .handle-in .handle-label { color: #67c23a; }
+  .handle-out .handle-label { color: #f56c6c; }
+
+  /* SPLIT POINT */
+  .split-point {
+    position: absolute; top: 0; bottom: 0; width: 2px;
+    background: #e6a23c; cursor: ew-resize; z-index: 9;
+    transform: translateX(-1px);
+  }
+  .split-pill {
+    position: absolute; top: -22px; left: 50%; transform: translateX(-50%);
+    background: #e6a23c; color: white; font-size: 9px; padding: 1px 5px;
+    border-radius: 3px; white-space: nowrap;
+  }
+
+  /* INFO ROW */
+  .info-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 6px 0; border-top: 1px solid #2d2f33;
+  }
+  .info-in { color: #67c23a; font-weight: 600; }
+  .info-out { color: #f56c6c; font-weight: 600; }
+
+  /* INPUTS */
+  .inputs-row { display: flex; gap: 20px; align-items: center; }
+  .input-group { display: flex; align-items: center; gap: 8px; }
+  .input-label { font-size: 12px; color: #909399; white-space: nowrap; }
+  .num-input {
+    width: 90px; padding: 4px 8px; border-radius: 4px;
+    border: 1px solid #3a3c40; background: #2a2c30; color: #e5eaf3;
+    font-size: 12px; font-family: inherit; outline: none;
+  }
+  .num-input:focus { border-color: #409eff; }
+
+  .hint-text { font-size: 11px; color: #555; }
+
+  /* FOOTER */
+  .dialog-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 20px; border-top: 1px solid #2d2f33;
+  }
+  .footer-right { display: flex; gap: 8px; }
+  .btn {
+    padding: 7px 14px; border-radius: 4px; font-size: 13px; cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s; font-family: inherit;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-danger { background: #f56c6c; color: white; border: none; }
+  .btn-danger:hover { background: #f78989; }
+  .btn-default { background: transparent; color: #cfd3dc; border: 1px solid #3a3c40; }
+  .btn-default:hover { border-color: #606266; }
+  .btn-primary { background: #409eff; color: white; border: none; }
+  .btn-primary:hover { background: #66b1ff; }
+  .btn-disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+
+  .toast {
+    position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+    background: #303133; color: white; padding: 8px 16px; border-radius: 6px;
+    font-size: 12px; z-index: 200; display: none;
+    animation: toastin 0.2s ease;
+  }
+  @keyframes toastin { from { opacity:0; transform: translateX(-50%) translateY(6px); } to { opacity:1; transform: translateX(-50%) translateY(0); } }
 </style>
 </head>
 <body>
-  <button class="btn" onclick="openTrim()">✂ Trim</button>
-  <div class="modal" id="modal">
-    <div class="modal-title">✂️ Обрізка сцени</div>
-    <div class="track">
-      <div class="fill"></div>
-      <div class="handle left"></div>
-      <div class="handle right"></div>
+
+<button class="open-btn" onclick="openModal()">✂ Trim</button>
+
+<div class="dialog-overlay" id="overlay" onclick="handleOverlayClick(event)">
+  <div class="dialog">
+    <div class="dialog-header">
+      <span class="dialog-title">Trim / Split</span>
+      <button class="close-x" onclick="closeModal()">×</button>
     </div>
-    <div class="times"><span>0:02</span><span>0:14</span></div>
-    <div class="actions">
-      <button class="save-btn" onclick="save()">Зберегти</button>
-      <button class="cancel-btn" onclick="close()">Скасувати</button>
+
+    <div class="dialog-body">
+      <!-- Video -->
+      <div class="video-area">
+        <div class="video-placeholder">
+          <div class="play-icon">▶</div>
+          <span>Scene preview</span>
+        </div>
+      </div>
+
+      <!-- Waveform -->
+      <div class="waveform-section">
+        <div class="waveform-legend">
+          <span class="waveform-title">Waveform <span class="waveform-title-sub">— real waveform</span></span>
+          <div class="legend-items">
+            <span class="dot-in">■</span><span>In</span>
+            <span class="dot-out">■</span><span>Out</span>
+            <span class="legend-sep">|</span>
+            <span class="split-label">✂ Split</span>
+          </div>
+        </div>
+
+        <div class="timeline-wrap" id="timeline" onmousedown="onTimelineClick(event)">
+          <canvas class="waveform-canvas" id="waveCanvas"></canvas>
+          <div class="trim-region" id="trimRegion"></div>
+          <div class="handle handle-in" id="handleIn" onmousedown="startDrag(event,'in')">
+            <span class="handle-label">IN</span>
+            <div class="handle-bar"></div>
+          </div>
+          <div class="handle handle-out" id="handleOut" onmousedown="startDrag(event,'out')">
+            <span class="handle-label">OUT</span>
+            <div class="handle-bar"></div>
+          </div>
+          <div class="split-point" id="splitPoint" onmousedown="startDrag(event,'split')">
+            <div class="split-pill">✂ Split</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info -->
+      <div class="info-row">
+        <span>In:&nbsp;<span class="info-in" id="infoIn">0.00s</span></span>
+        <span>Duration:&nbsp;<strong id="infoDur">0.00s</strong></span>
+        <span>Out:&nbsp;<span class="info-out" id="infoOut">0.00s</span></span>
+      </div>
+
+      <!-- Inputs -->
+      <div class="inputs-row">
+        <div class="input-group">
+          <span class="input-label">In point (s)</span>
+          <input class="num-input" id="inInput" type="number" step="0.01" min="0" oninput="onInInput()" />
+        </div>
+        <div class="input-group">
+          <span class="input-label">Out point (s)</span>
+          <input class="num-input" id="outInput" type="number" step="0.01" min="0" oninput="onOutInput()" />
+        </div>
+      </div>
+
+      <span class="hint-text">Click waveform to set split point. Drag green / red handles for In / Out.</span>
+    </div>
+
+    <div class="dialog-footer">
+      <button class="btn btn-danger" id="splitBtn" onclick="doSplit()">✂ Split Here</button>
+      <div class="footer-right">
+        <button class="btn btn-default" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="doApply()">✓ Apply Trim</button>
+      </div>
     </div>
   </div>
-  <script>
-    function openTrim() {
-      document.getElementById('modal').style.display = 'block';
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const DURATION = 18.5;
+  let inPct = 0.10, outPct = 0.85, splitPct = 0.50;
+  let dragging = null, dragStartX = 0, dragStartPct = 0;
+
+  function openModal() {
+    document.getElementById('overlay').classList.add('open');
+    requestAnimationFrame(() => {
+      drawWaveform();
+      render();
+    });
+  }
+  function closeModal() {
+    document.getElementById('overlay').classList.remove('open');
+  }
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('overlay')) closeModal();
+  }
+
+  function drawWaveform() {
+    const canvas = document.getElementById('waveCanvas');
+    const tl = document.getElementById('timeline');
+    canvas.width = tl.offsetWidth;
+    canvas.height = tl.offsetHeight;
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width, h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+    const bars = 80;
+    const barW = w / bars;
+    // seed-based fake waveform
+    for (let i = 0; i < bars; i++) {
+      const seed = Math.sin(i * 2.3 + 1.7) * Math.cos(i * 0.7) * Math.sin(i * 0.15);
+      const amp = (Math.abs(seed) * 0.7 + 0.1) * (h / 2 - 4);
+      const pct = i / bars;
+      const inRegion = pct >= inPct && pct <= outPct;
+      ctx.fillStyle = inRegion ? 'rgba(64,158,255,0.6)' : 'rgba(100,100,110,0.4)';
+      const x = i * barW + barW * 0.1;
+      const bw = barW * 0.8;
+      ctx.fillRect(x, h / 2 - amp, bw, amp * 2);
     }
-    function save() {
-      document.getElementById('modal').style.display = 'none';
-    }
-    function close() {
-      document.getElementById('modal').style.display = 'none';
-    }
-  </script>
+  }
+
+  function render() {
+    const tl = document.getElementById('timeline');
+    const w = tl.offsetWidth;
+    // handles
+    document.getElementById('handleIn').style.left = (inPct * w) + 'px';
+    document.getElementById('handleOut').style.left = (outPct * w) + 'px';
+    document.getElementById('splitPoint').style.left = (splitPct * w) + 'px';
+    // region
+    const region = document.getElementById('trimRegion');
+    region.style.left = (inPct * 100) + '%';
+    region.style.width = ((outPct - inPct) * 100) + '%';
+    // info
+    const inSec = (inPct * DURATION).toFixed(2);
+    const outSec = (outPct * DURATION).toFixed(2);
+    const dur = ((outPct - inPct) * DURATION).toFixed(2);
+    document.getElementById('infoIn').textContent = inSec + 's';
+    document.getElementById('infoOut').textContent = outSec + 's';
+    document.getElementById('infoDur').textContent = dur + 's';
+    document.getElementById('inInput').value = inSec;
+    document.getElementById('outInput').value = outSec;
+    // split btn
+    const splitInRange = splitPct > inPct && splitPct < outPct;
+    document.getElementById('splitBtn').classList.toggle('btn-disabled', !splitInRange);
+    drawWaveform();
+  }
+
+  function onTimelineClick(e) {
+    if (e.target.closest('.handle') || e.target.closest('.split-point')) return;
+    const tl = document.getElementById('timeline');
+    const rect = tl.getBoundingClientRect();
+    splitPct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    render();
+  }
+
+  function startDrag(e, type) {
+    e.stopPropagation();
+    e.preventDefault();
+    dragging = type;
+    dragStartX = e.clientX;
+    dragStartPct = type === 'in' ? inPct : type === 'out' ? outPct : splitPct;
+    document.addEventListener('mousemove', onDrag);
+    document.addEventListener('mouseup', stopDrag);
+  }
+  function onDrag(e) {
+    if (!dragging) return;
+    const tl = document.getElementById('timeline');
+    const w = tl.offsetWidth;
+    const delta = (e.clientX - dragStartX) / w;
+    let newPct = Math.max(0, Math.min(1, dragStartPct + delta));
+    if (dragging === 'in') inPct = Math.min(newPct, outPct - 0.05);
+    else if (dragging === 'out') outPct = Math.max(newPct, inPct + 0.05);
+    else splitPct = newPct;
+    render();
+  }
+  function stopDrag() {
+    dragging = null;
+    document.removeEventListener('mousemove', onDrag);
+    document.removeEventListener('mouseup', stopDrag);
+  }
+
+  function onInInput() {
+    const v = parseFloat(document.getElementById('inInput').value);
+    if (!isNaN(v)) { inPct = Math.max(0, Math.min(v / DURATION, outPct - 0.05)); render(); }
+  }
+  function onOutInput() {
+    const v = parseFloat(document.getElementById('outInput').value);
+    if (!isNaN(v)) { outPct = Math.max(inPct + 0.05, Math.min(v / DURATION, 1)); render(); }
+  }
+
+  function doSplit() {
+    const t = (splitPct * DURATION).toFixed(2);
+    showToast(`✂️ Сцену розділено на 0:00–${t}s та ${t}s–кінець`);
+    closeModal();
+  }
+  function doApply() {
+    const i = (inPct * DURATION).toFixed(2);
+    const o = (outPct * DURATION).toFixed(2);
+    showToast(`✅ Trim застосовано: ${i}s → ${o}s`);
+    closeModal();
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.style.display = 'block';
+    clearTimeout(window._tt);
+    window._tt = setTimeout(() => t.style.display = 'none', 3000);
+  }
+</script>
 </body>
 </html>
