@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: white; color: #303133; font-size: 13px; padding: 12px;
+  }
+
+  /* COLLAPSE */
+  .collapse { border: 1px solid #e4e7ed; border-radius: 4px; overflow: hidden; }
+  .collapse-item { border-bottom: 1px solid #e4e7ed; }
+  .collapse-item:last-child { border-bottom: none; }
+  .collapse-header {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 16px; cursor: pointer; background: white;
+    transition: background 0.15s; user-select: none;
+  }
+  .collapse-header:hover { background: #fafafa; }
+  .collapse-arrow { color: #909399; font-size: 11px; transition: transform 0.2s; }
+  .collapse-header.open .collapse-arrow { transform: rotate(90deg); }
+  .collapse-title { font-size: 14px; font-weight: 600; color: #303133; }
+  .collapse-subtitle { font-size: 12px; color: #909399; margin-left: 4px; }
+  .collapse-body { display: none; padding: 16px; border-top: 1px solid #f0f2f5; }
+  .collapse-body.open { display: block; }
+
+  /* FORM */
+  .form-item { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+  .form-item:last-child { margin-bottom: 0; }
+  .form-label { width: 140px; flex-shrink: 0; font-size: 12px; color: #606266; padding-top: 6px; text-align: right; }
+  .form-content { flex: 1; }
+
+  /* INPUTS */
+  textarea, input[type=text] {
+    width: 100%; border: 1px solid #dcdfe6; border-radius: 4px;
+    padding: 6px 10px; font-size: 13px; font-family: inherit;
+    resize: vertical; outline: none; color: #303133;
+    transition: border-color 0.2s;
+  }
+  textarea:focus, input[type=text]:focus { border-color: #409eff; }
+  textarea::placeholder { color: #c0c4cc; }
+
+  /* RADIO GROUP */
+  .radio-group { display: inline-flex; border: 1px solid #dcdfe6; border-radius: 4px; overflow: hidden; }
+  .radio-btn {
+    padding: 6px 14px; font-size: 12px; cursor: pointer;
+    border-right: 1px solid #dcdfe6; color: #606266; background: white;
+    transition: background 0.15s, color 0.15s; user-select: none;
+  }
+  .radio-btn:last-child { border-right: none; }
+  .radio-btn.active { background: #409eff; color: white; border-color: #409eff; }
+
+  /* POSITION ICONS */
+  .pos-icon { display: flex; align-items: center; justify-content: center; width: 22px; height: 18px; }
+  .pos-icon svg { width: 18px; height: 14px; }
+
+  /* SELECT */
+  .select-wrap { position: relative; display: inline-block; }
+  select {
+    appearance: none; border: 1px solid #dcdfe6; border-radius: 4px;
+    padding: 6px 28px 6px 10px; font-size: 12px; font-family: inherit;
+    background: white; color: #303133; cursor: pointer; outline: none;
+    min-width: 200px;
+  }
+  select:focus { border-color: #409eff; }
+  .select-arrow {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    pointer-events: none; color: #c0c4cc; font-size: 11px;
+  }
+
+  /* ALERT */
+  .alert-info {
+    background: #f4f4f5; border: 1px solid #e9e9eb; border-radius: 4px;
+    padding: 10px 12px; display: flex; gap: 8px; align-items: flex-start;
+    margin-top: 14px;
+  }
+  .alert-icon { color: #909399; flex-shrink: 0; }
+  .alert-text { font-size: 12px; color: #606266; line-height: 1.5; }
+  .alert-text p + p { margin-top: 4px; }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 6px 12px; border-radius: 4px; border: none;
+    font-size: 12px; font-family: inherit; cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+  .btn-primary { background: #409eff; color: white; }
+  .btn-primary:hover { background: #66b1ff; }
+  .btn-success { background: #67c23a; color: white; }
+  .btn-success:hover { background: #85ce61; }
+  .btn-danger  { background: #f56c6c; color: white; }
+  .btn-default { background: white; color: #606266; border: 1px solid #dcdfe6; }
+  .btn-default:hover { border-color: #409eff; color: #409eff; }
+  .btn-sm { padding: 4px 8px; font-size: 11px; }
+  .btn-row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-top: 8px; }
+
+  /* SCRIPT CHUNKS */
+  .chunks-list { display: flex; flex-direction: column; gap: 6px; max-height: 320px; overflow-y: auto; margin-top: 8px; padding-right: 2px; }
+  .chunk-item { display: flex; align-items: flex-start; gap: 6px; }
+  .chunk-num { font-size: 11px; color: #c0c4cc; padding-top: 7px; min-width: 16px; text-align: right; flex-shrink: 0; }
+  .chunk-input {
+    flex: 1; border: 1px solid #dcdfe6; border-radius: 4px;
+    padding: 5px 8px; font-size: 12px; font-family: inherit; resize: none;
+    outline: none; min-height: 32px; line-height: 1.4;
+  }
+  .chunk-input:focus { border-color: #409eff; }
+  .chunk-actions { display: flex; gap: 3px; align-items: center; flex-shrink: 0; padding-top: 3px; }
+  .tag {
+    display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 11px;
+    background: #ecf5ff; color: #409eff; border: 1px solid #b3d8ff;
+  }
+  .tag.warn { background: #fdf6ec; color: #e6a23c; border-color: #f5dab1; }
+
+  /* BULK ATTACH */
+  .upload-area {
+    border: 2px dashed #dcdfe6; border-radius: 6px; padding: 20px;
+    text-align: center; cursor: pointer; transition: border-color 0.2s;
+  }
+  .upload-area:hover { border-color: #409eff; }
+  .upload-area input { display: none; }
+  .upload-area-text { color: #909399; font-size: 12px; margin-top: 6px; }
+  .img-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; margin-top: 10px; }
+  .img-item {
+    position: relative; aspect-ratio: 1; border-radius: 4px; overflow: hidden;
+    border: 1px solid #e4e7ed; cursor: grab;
+  }
+  .img-item img { width: 100%; height: 100%; object-fit: cover; }
+  .img-overlay {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+    padding: 4px; display: flex; justify-content: flex-end;
+  }
+  .img-remove {
+    background: rgba(245,108,108,0.9); border: none; color: white;
+    border-radius: 50%; width: 18px; height: 18px; cursor: pointer;
+    font-size: 10px; display: flex; align-items: center; justify-content: center;
+    line-height: 1;
+  }
+  .bulk-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; flex-wrap: wrap; gap: 8px; }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+    background: #303133; color: white; padding: 8px 16px; border-radius: 6px;
+    font-size: 12px; z-index: 200; display: none; white-space: nowrap;
+    animation: toastin 0.2s ease;
+  }
+  @keyframes toastin { from { opacity:0; transform: translateX(-50%) translateY(6px); } to { opacity:1; transform: translateX(-50%) translateY(0); } }
+
+  /* TOOLTIP */
+  [data-tip] { position: relative; }
+  [data-tip]:hover::after {
+    content: attr(data-tip);
+    position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+    background: #303133; color: white; padding: 5px 10px; border-radius: 4px;
+    font-size: 11px; white-space: nowrap; z-index: 50; pointer-events: none;
+  }
+
+  .divider { border: none; border-top: 1px dashed #e4e7ed; margin: 4px 0 12px; }
+</style>
+</head>
+<body>
+
+<div class="collapse">
+
+  <!-- ── 1. GENERAL CONFIGURATION ─────────────────────────── -->
+  <div class="collapse-item">
+    <div class="collapse-header" onclick="toggle(this)">
+      <span class="collapse-arrow">▶</span>
+      <span class="collapse-title">General Configuration</span>
+      <span class="collapse-subtitle">These settings apply to all scenes</span>
+    </div>
+    <div class="collapse-body">
+
+      <div class="form-item">
+        <span class="form-label">Video Prompt</span>
+        <div class="form-content">
+          <textarea rows="2" id="videoPrompt" placeholder="Shared video prompt for all scenes"
+            oninput="onPromptInput()" style="min-height:56px"></textarea>
+          <div id="promptHint" style="font-size:11px;color:#909399;margin-top:4px;display:none">
+            💡 Цей промт буде використаний як базовий для генерації всіх сцен
+          </div>
+        </div>
+      </div>
+
+      <div class="form-item">
+        <span class="form-label">Headline Position</span>
+        <div class="form-content">
+          <div class="radio-group" id="posGroup">
+            <div class="radio-btn" onclick="selectPos(this,'top')" data-tip="Заголовок зверху відео">
+              <div class="pos-icon">
+                <svg viewBox="0 0 18 14"><rect x="2" y="2" width="14" height="2" rx="1" fill="currentColor"/><rect x="2" y="6" width="10" height="1.5" rx="0.75" fill="#ddd"/><rect x="2" y="9" width="12" height="1.5" rx="0.75" fill="#ddd"/></svg>
+              </div>
+            </div>
+            <div class="radio-btn active" onclick="selectPos(this,'center')" data-tip="Заголовок по центру">
+              <div class="pos-icon">
+                <svg viewBox="0 0 18 14"><rect x="2" y="2" width="10" height="1.5" rx="0.75" fill="#ddd"/><rect x="2" y="6" width="14" height="2" rx="1" fill="currentColor"/><rect x="2" y="10" width="10" height="1.5" rx="0.75" fill="#ddd"/></svg>
+              </div>
+            </div>
+            <div class="radio-btn" onclick="selectPos(this,'bottom')" data-tip="Заголовок знизу відео">
+              <div class="pos-icon">
+                <svg viewBox="0 0 18 14"><rect x="2" y="2" width="10" height="1.5" rx="0.75" fill="#ddd"/><rect x="2" y="5" width="12" height="1.5" rx="0.75" fill="#ddd"/><rect x="2" y="9" width="14" height="2" rx="1" fill="currentColor"/></svg>
+              </div>
+            </div>
+          </div>
+          <div id="posHint" style="font-size:11px;color:#409eff;margin-top:5px">Позиція: по центру</div>
+        </div>
+      </div>
+
+      <div class="form-item">
+        <span class="form-label">Custom Font</span>
+        <div class="form-content">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div class="select-wrap">
+              <select id="fontSelect" onchange="onFontChange()">
+                <option value="georgia">Georgia (default)</option>
+                <option value="montserrat">Montserrat</option>
+                <option value="oswald">Oswald</option>
+                <option value="raleway">Raleway</option>
+                <option value="custom">Custom file...</option>
+              </select>
+              <span class="select-arrow">▾</span>
+            </div>
+            <div id="fontUploadWrap" style="display:none">
+              <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer">
+                <input type="file" accept=".ttf,.otf" id="fontFile" onchange="onFontFile()" style="display:none">
+                <button class="btn btn-default btn-sm" onclick="document.getElementById('fontFile').click()">
+                  Select custom font (.ttf, .otf)
+                </button>
+                <span id="fontFileName" style="font-size:11px;color:#909399"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-item">
+        <span class="form-label">Voiceover</span>
+        <div class="form-content">
+          <div class="radio-group">
+            <div class="radio-btn active" onclick="selectVO(this,'character')" data-tip="ШІ озвучує від імені персонажа на відео">Character Voiceover</div>
+            <div class="radio-btn" onclick="selectVO(this,'background')" data-tip="Закадровий голос поверх відео">Background Voiceover</div>
+            <div class="radio-btn" onclick="selectVO(this,'none')" data-tip="Відео без озвучки">No Voiceover</div>
+          </div>
+          <div id="voiceSelectWrap" style="display:none;margin-top:8px">
+            <div class="select-wrap">
+              <select id="voiceSelect" onchange="onVoiceChange()">
+                <option value="">Select a voice</option>
+                <option value="21m00Tcm4TlvDq8ikWAM">Rachel — Female · American · calm, professional</option>
+                <option value="EXAVITQu4vr4xnSDxMaL">Bella — Female · American · soft, warm</option>
+                <option value="AZnzlk1XvdvUeBnXmlld">Domi — Female · American · strong, confident</option>
+                <option value="MF3mGyEYCl7XYWbV9V6O">Elli — Female · American · emotional, expressive</option>
+                <option value="pMsXgVXv3BLzUgSXRplE">Serena — Female · American · pleasant, clear</option>
+                <option value="ErXwobaYiN019PkySvjV">Antoni — Male · American · well-rounded</option>
+                <option value="VR6AewLTigWG4xSOukaG">Arnold — Male · American · crisp, authoritative</option>
+                <option value="pNInz6obpgDQGcFmaJgB">Adam — Male · American · deep, steady</option>
+                <option value="TxGEqnHWrfWFTfGW9XjX">Josh — Male · American · deep, calm</option>
+                <option value="yoZ06aMxZJJ28mfd3POQ">Sam — Male · American · raspy, mature</option>
+                <option value="Ohufa9TfJ3Vjug1d7cBU">AI Woman — Female · 40 y.o.</option>
+              </select>
+              <span class="select-arrow">▾</span>
+            </div>
+            <div id="voiceHint" style="font-size:11px;color:#909399;margin-top:4px"></div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider">
+      <div class="alert-info">
+        <span class="alert-icon">ℹ</span>
+        <div class="alert-text">
+          <p><b>Note:</b> These settings serve as defaults for all scenes. Each scene can override these values individually.</p>
+          <p>Changes will only apply when you regenerate a scene.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 2. SCRIPT TO SCENES ───────────────────────────────── -->
+  <div class="collapse-item">
+    <div class="collapse-header" onclick="toggle(this)">
+      <span class="collapse-arrow">▶</span>
+      <span class="collapse-title">Script to Scenes</span>
+      <span class="collapse-subtitle">Distribute full script into scenes headlines</span>
+    </div>
+    <div class="collapse-body">
+
+      <textarea id="scriptInput" rows="4" style="min-height:80px"
+        placeholder="Paste your full script here. Use 'Split to chunks' to break it into scene-sized headlines."></textarea>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="splitBtn" onclick="doSplit()" disabled>Split to chunks</button>
+        <button class="btn btn-success" id="fillBtn" onclick="doFill()" disabled>Fill 0 chunks</button>
+        <div style="display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:wrap">
+          <span style="font-size:11px;color:#606266">Target chunk duration:</span>
+          <div class="radio-group">
+            <div class="radio-btn btn-sm" onclick="selectDur(this,4)">4s</div>
+            <div class="radio-btn btn-sm active" onclick="selectDur(this,6)">6s</div>
+            <div class="radio-btn btn-sm" onclick="selectDur(this,8)">8s</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="chunksWrap" style="display:none;margin-top:10px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <b style="font-size:12px" id="chunksTitle">Preview (0 chunks):</b>
+        </div>
+        <div class="chunks-list" id="chunksList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 3. BULK ATTACH IMAGES ─────────────────────────────── -->
+  <div class="collapse-item">
+    <div class="collapse-header" onclick="toggle(this)">
+      <span class="collapse-arrow">▶</span>
+      <span class="collapse-title">Bulk Attach Images</span>
+      <span class="collapse-subtitle">Upload images to distribute across all scenes</span>
+    </div>
+    <div class="collapse-body">
+
+      <label class="upload-area" id="dropArea" onclick="document.getElementById('imgInput').click()">
+        <input type="file" id="imgInput" accept="image/*" multiple onchange="onImgSelect(event)">
+        <div>🖼 <b style="color:#409eff">Select Images</b></div>
+        <div class="upload-area-text">Клікни або перетягни зображення — вони розподіляться по сценах</div>
+      </label>
+
+      <div id="imgPreviewWrap" style="display:none">
+        <div style="font-size:12px;color:#909399;margin-top:8px" id="imgCount"></div>
+        <div class="img-grid" id="imgGrid"></div>
+
+        <div class="bulk-actions">
+          <div class="radio-group">
+            <div class="radio-btn btn-sm active" id="modeSeq" onclick="selectMode(this,'sequential')" data-tip="Зображення розподіляються по порядку: 1→Сцена1, 2→Сцена2...">Sequential</div>
+            <div class="radio-btn btn-sm" id="modeRnd" onclick="selectMode(this,'random')" data-tip="Зображення розподіляються випадково по сценах">Random</div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-default btn-sm" onclick="clearImages()">Clear</button>
+            <button class="btn btn-primary btn-sm" id="distributeBtn" onclick="doDistribute()">Distribute to 4 scenes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── COLLAPSE ────────────────────────────────────────────────
+  function toggle(header) {
+    header.classList.toggle('open');
+    header.nextElementSibling.classList.toggle('open');
+  }
+
+  // ── TOAST ───────────────────────────────────────────────────
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.style.display = 'block';
+    clearTimeout(window._tt);
+    window._tt = setTimeout(() => t.style.display = 'none', 3000);
+  }
+
+  // ── GENERAL CONFIG ──────────────────────────────────────────
+  function onPromptInput() {
+    const v = document.getElementById('videoPrompt').value;
+    document.getElementById('promptHint').style.display = v ? 'block' : 'none';
+  }
+
+  const posLabels = { top: 'зверху', center: 'по центру', bottom: 'знизу' };
+  function selectPos(el, val) {
+    el.closest('.radio-group').querySelectorAll('.radio-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('posHint').textContent = `Позиція: ${posLabels[val]}`;
+  }
+
+  function onFontChange() {
+    const v = document.getElementById('fontSelect').value;
+    document.getElementById('fontUploadWrap').style.display = v === 'custom' ? 'block' : 'none';
+    if (v !== 'custom') showToast(`✅ Шрифт "${document.getElementById('fontSelect').options[document.getElementById('fontSelect').selectedIndex].text}" буде застосований до всіх сцен`);
+  }
+
+  function onFontFile() {
+    const f = document.getElementById('fontFile').files[0];
+    if (f) {
+      document.getElementById('fontFileName').textContent = '✓ ' + f.name;
+      showToast(`✅ Шрифт "${f.name}" завантажено`);
+    }
+  }
+
+  let voiceMode = 'character';
+  function selectVO(el, val) {
+    voiceMode = val;
+    el.closest('.radio-group').querySelectorAll('.radio-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('voiceSelectWrap').style.display = val === 'background' ? 'block' : 'none';
+    if (val === 'character') showToast('🎙 Character Voiceover — ШІ озвучує від імені персонажа на відео');
+    if (val === 'none') showToast('🔇 No Voiceover — сцени будуть без озвучки');
+  }
+
+  function onVoiceChange() {
+    const sel = document.getElementById('voiceSelect');
+    const name = sel.options[sel.selectedIndex].text.split(' — ')[0];
+    document.getElementById('voiceHint').textContent = `✅ Голос "${name}" буде використаний для озвучки`;
+  }
+
+  // ── SCRIPT / CHUNKS ─────────────────────────────────────────
+  const AVG_CHARS = 6, WPM = 150;
+  let targetDur = 6;
+  let chunks = [];
+
+  function calcDur(text) { return (text.length / AVG_CHARS / WPM) * 60; }
+  function getWords(text) { return Math.round(text.trim().length / AVG_CHARS); }
+
+  function splitBySentences(text) {
+    return text.split(/(?<=[.!?])\s+/).map(s => s.trim()).filter(Boolean);
+  }
+  function splitByParagraphs(text) {
+    return text.split(/\n\s*\n/).map(s => s.trim()).filter(Boolean);
+  }
+  function mergeSmall(arr) {
+    const MIN = 4, MAX = 8.3;
+    let result = [...arr];
+    while (true) {
+      const merged = []; let i = 0, did = false;
+      while (i < result.length) {
+        const c = result[i];
+        if (calcDur(c) < MIN && i + 1 < result.length) {
+          const combined = c + ' ' + result[i+1];
+          if (calcDur(combined) <= MAX) { merged.push(combined); i += 2; did = true; continue; }
+        }
+        merged.push(c); i++;
+      }
+      result = merged;
+      if (!did) break;
+    }
+    return result;
+  }
+  function fitToMax(text) {
+    const MAX = 8.3;
+    if (calcDur(text) <= MAX) return [text];
+    const sentences = splitBySentences(text);
+    const result = []; let cur = '';
+    for (const s of sentences) {
+      const cand = cur ? cur + ' ' + s : s;
+      if (calcDur(cand) <= MAX) { cur = cand; }
+      else { if (cur) result.push(cur); cur = calcDur(s) <= MAX ? s : s; }
+    }
+    if (cur) result.push(cur);
+    return mergeSmall(result);
+  }
+  function splitScript(text) {
+    const paras = splitByParagraphs(text.trim());
+    const flat = [];
+    for (const p of paras) flat.push(...fitToMax(p));
+    return flat.map(t => ({ id: crypto.randomUUID(), text: t, dur: calcDur(t) }));
+  }
+
+  document.getElementById('scriptInput').addEventListener('input', function() {
+    document.getElementById('splitBtn').disabled = !this.value.trim();
+  });
+
+  function selectDur(el, val) {
+    targetDur = val;
+    el.closest('.radio-group').querySelectorAll('.radio-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    if (chunks.length) doSplit();
+  }
+
+  function doSplit() {
+    const text = document.getElementById('scriptInput').value.trim();
+    if (!text) return;
+    chunks = splitScript(text);
+    renderChunks();
+    document.getElementById('fillBtn').disabled = chunks.length === 0;
+    document.getElementById('fillBtn').textContent = `Fill ${chunks.length} chunks`;
+  }
+
+  function renderChunks() {
+    const list = document.getElementById('chunksList');
+    list.innerHTML = '';
+    document.getElementById('chunksTitle').textContent = `Preview (${chunks.length} chunks):`;
+    document.getElementById('chunksWrap').style.display = chunks.length ? 'block' : 'none';
+
+    chunks.forEach((chunk, i) => {
+      const isWarn = chunk.dur > 8.2 || chunk.dur < 3.1;
+      const div = document.createElement('div');
+      div.className = 'chunk-item';
+      div.innerHTML = `
+        <span class="chunk-num">${i + 1}.</span>
+        <textarea class="chunk-input" rows="1">${escHtml(chunk.text)}</textarea>
+        <div class="chunk-actions">
+          <span class="tag ${isWarn ? 'warn' : ''}">~${chunk.dur.toFixed(1)}s</span>
+          <button class="btn btn-default btn-sm" onclick="splitChunk(${i})" title="Розділити по позиції курсора">Split</button>
+          <button class="btn btn-default btn-sm" onclick="addAfter(${i})">+</button>
+          <button class="btn btn-default btn-sm" onclick="mergeDown(${i})" ${i === chunks.length - 1 ? 'disabled' : ''}>Merge ↓</button>
+          <button class="btn btn-danger btn-sm" onclick="removeChunk(${i})" ${chunks.length === 1 ? 'disabled' : ''}>✕</button>
+        </div>`;
+      const ta = div.querySelector('textarea');
+      ta.addEventListener('input', () => {
+        chunk.text = ta.value;
+        chunk.dur = calcDur(ta.value);
+        const tag = div.querySelector('.tag');
+        tag.textContent = `~${chunk.dur.toFixed(1)}s`;
+        tag.className = 'tag' + (chunk.dur > 8.2 || chunk.dur < 3.1 ? ' warn' : '');
+        ta.style.height = 'auto';
+        ta.style.height = ta.scrollHeight + 'px';
+      });
+      // auto-resize
+      ta.style.height = 'auto';
+      setTimeout(() => { ta.style.height = ta.scrollHeight + 'px'; }, 0);
+      list.appendChild(div);
+    });
+    document.getElementById('fillBtn').textContent = `Fill ${chunks.length} chunks`;
+  }
+
+  function escHtml(t) { return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  function splitChunk(i) {
+    const ta = document.querySelectorAll('.chunk-input')[i];
+    const pos = ta.selectionStart;
+    if (!pos || pos <= 0 || pos >= chunks[i].text.length) {
+      showToast('⚠️ Встанови курсор всередині тексту щоб розділити'); return;
+    }
+    const before = chunks[i].text.slice(0, pos).trim();
+    const after  = chunks[i].text.slice(pos).trim();
+    if (!before || !after) return;
+    chunks.splice(i, 1,
+      { id: crypto.randomUUID(), text: before, dur: calcDur(before) },
+      { id: crypto.randomUUID(), text: after,  dur: calcDur(after)  }
+    );
+    renderChunks();
+  }
+
+  function addAfter(i) {
+    chunks.splice(i + 1, 0, { id: crypto.randomUUID(), text: '', dur: 0 });
+    renderChunks();
+  }
+
+  function removeChunk(i) {
+    if (chunks.length > 1) { chunks.splice(i, 1); renderChunks(); }
+  }
+
+  function mergeDown(i) {
+    if (i >= chunks.length - 1) return;
+    const text = (chunks[i].text + ' ' + chunks[i+1].text).trim();
+    chunks.splice(i, 2, { id: crypto.randomUUID(), text, dur: calcDur(text) });
+    renderChunks();
+  }
+
+  function doFill() {
+    if (!chunks.length) return;
+    showToast(`✅ ${chunks.length} чанків розподілено по сценах — заголовки оновлені`);
+  }
+
+  // ── BULK ATTACH ─────────────────────────────────────────────
+  let images = [];
+  let distributeMode = 'sequential';
+
+  function onImgSelect(e) {
+    const files = Array.from(e.target.files);
+    images.push(...files);
+    renderImages();
+  }
+
+  function renderImages() {
+    const grid = document.getElementById('imgGrid');
+    const wrap = document.getElementById('imgPreviewWrap');
+    grid.innerHTML = '';
+    if (!images.length) { wrap.style.display = 'none'; return; }
+    wrap.style.display = 'block';
+    document.getElementById('imgCount').textContent = `${images.length} image(s) selected — drag to reorder`;
+    images.forEach((f, i) => {
+      const url = URL.createObjectURL(f);
+      const div = document.createElement('div');
+      div.className = 'img-item';
+      div.innerHTML = `<img src="${url}"><div class="img-overlay"><button class="img-remove" onclick="removeImg(${i})">✕</button></div>`;
+      grid.appendChild(div);
+    });
+    document.getElementById('distributeBtn').textContent = `Distribute to 4 scenes`;
+  }
+
+  function removeImg(i) { images.splice(i, 1); renderImages(); }
+  function clearImages() { images = []; renderImages(); document.getElementById('imgInput').value = ''; }
+
+  function selectMode(el, val) {
+    distributeMode = val;
+    document.querySelectorAll('#modeSeq,#modeRnd').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    showToast(val === 'sequential'
+      ? '📋 Sequential — зображення по порядку: 1→Сцена1, 2→Сцена2...'
+      : '🔀 Random — зображення розподіляться випадково між сценами');
+  }
+
+  function doDistribute() {
+    if (!images.length) return;
+    showToast(`✅ Distributed ${images.length} image(s) across 4 scenes`);
+  }
+</script>
+</body>
+</html>
