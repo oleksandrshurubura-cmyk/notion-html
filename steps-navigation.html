@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: white;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    padding: 20px 16px 16px;
+  }
+
+  /* STEPS */
+  .steps {
+    display: flex; align-items: flex-start; justify-content: center;
+    gap: 0; width: 100%; position: relative;
+  }
+  .step {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 6px; flex: 1; cursor: pointer; position: relative;
+    transition: opacity 0.15s;
+  }
+  .step:hover .step-icon-wrap { border-color: #409eff; color: #409eff; }
+
+  /* LINE */
+  .step::before, .step::after {
+    content: ''; position: absolute; top: 16px; height: 1px;
+    background: #e4e7ed; z-index: 0;
+  }
+  .step::before { left: 0; right: 50%; }
+  .step::after  { left: 50%; right: 0; }
+  .step:first-child::before { display: none; }
+  .step:last-child::after  { display: none; }
+  .step.done::after, .step.active::after { background: #409eff; }
+  .step.done::before, .step.active::before { background: #409eff; }
+  .step:first-child.active::after { background: #e4e7ed; }
+
+  /* ICON */
+  .step-icon-wrap {
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 2px solid #e4e7ed; background: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: #c0c4cc; z-index: 1; position: relative;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+  .step.done .step-icon-wrap {
+    border-color: #409eff; background: #409eff; color: white;
+  }
+  .step.active .step-icon-wrap {
+    border-color: #409eff; color: #409eff; background: white;
+    box-shadow: 0 0 0 3px rgba(64,158,255,0.15);
+  }
+
+  .step-label {
+    font-size: 13px; color: #c0c4cc; font-weight: 400;
+    transition: color 0.2s, font-weight 0.2s; text-align: center;
+  }
+  .step.active .step-label { color: #303133; font-weight: 600; }
+  .step.done .step-label  { color: #909399; }
+
+  /* INFO PANEL */
+  .info-panel {
+    margin-top: 16px; padding: 12px 16px;
+    background: #f5f7ff; border-left: 3px solid #409eff;
+    border-radius: 0 6px 6px 0; font-size: 13px; color: #303133;
+    animation: fadein 0.2s ease; min-height: 48px;
+  }
+  .info-panel b { display: block; margin-bottom: 4px; font-size: 13px; color: #409eff; }
+  .info-panel ul { padding-left: 16px; color: #606266; font-size: 12px; margin-top: 4px; }
+  .info-panel li { margin-bottom: 2px; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<div class="steps" id="steps">
+  <div class="step active" onclick="select(0)">
+    <div class="step-icon-wrap">↑</div>
+    <span class="step-label">Create Scenes</span>
+  </div>
+  <div class="step" onclick="select(1)">
+    <div class="step-icon-wrap">✎</div>
+    <span class="step-label">Edit Scenes</span>
+  </div>
+  <div class="step" onclick="select(2)">
+    <div class="step-icon-wrap">⛶</div>
+    <span class="step-label">Generate Video</span>
+  </div>
+</div>
+
+<div class="info-panel" id="info"></div>
+
+<script>
+  const INFO = [
+    {
+      title: '📁 Create Scenes — завантаження та розбивка',
+      items: [
+        'Завантаж відео — ШІ автоматично розіб\'є його на сцени за зміною ракурсу',
+        'Або додай порожні сцени вручну кнопкою "Add Empty Scene"',
+        'Вибери формат відео: вертикальний, горизонтальний або квадратний',
+        'Можна відновити сцени з попереднього запуску через "Load from Task"',
+      ]
+    },
+    {
+      title: '✏️ Edit Scenes — налаштування та генерація',
+      items: [
+        'Задай войсовер, голос та позицію заголовку для всіх сцен одразу',
+        'Завантаж скрипт і розподіли текст по сценах автоматично',
+        'Натисни "Generate all" — ШІ згенерує кожну сцену з войсовером і текстом',
+        'Обріж окрему сцену через Trim якщо потрібно скоротити',
+      ]
+    },
+    {
+      title: '🎬 Generate Video — збірка фінального відео',
+      items: [
+        'Додай фонову музику і налаштуй її гучність',
+        'Увімкни субтитри — вони генеруються автоматично з войсоверу',
+        'Вибери CTA-кінцівку яка додасться в кінець відео',
+        'Натисни "Merge Scenes" — і за кілька хвилин фінальне відео готове',
+      ]
+    },
+  ]
+
+  let current = 0
+
+  function select(i) {
+    current = i
+    document.querySelectorAll('.step').forEach((el, idx) => {
+      el.className = 'step' + (idx < i ? ' done' : idx === i ? ' active' : '')
+    })
+    const d = INFO[i]
+    const ul = d.items.map(t => `<li>${t}</li>`).join('')
+    document.getElementById('info').innerHTML = `<b>${d.title}</b><ul>${ul}</ul>`
+  }
+
+  select(0)
+</script>
+</body>
+</html>
