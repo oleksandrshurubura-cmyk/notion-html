@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Зайнятості та досягнення</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Syne:wght@600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f7f6f3;
+    --surface: #ffffff;
+    --surface2: #f0ede8;
+    --border: #e5e2db;
+    --text: #1a1917;
+    --muted: #6b6860;
+    --teal: #0f6e56;
+    --teal-bg: #e1f5ee;
+    --purple: #3c3489;
+    --purple-bg: #eeedfe;
+    --amber: #854f0b;
+    --amber-bg: #faeeda;
+    --coral: #993c1d;
+    --coral-bg: #faece7;
+    --accent: #1a1917;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    padding: 2rem 1rem 6rem;
+  }
+
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .header {
+    padding: 3rem 0 2.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 3rem;
+  }
+
+  .header-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+
+  .header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 0.75rem;
+  }
+
+  .header-sub {
+    font-size: 15px;
+    color: var(--muted);
+  }
+
+  .header-sub strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* Section titles */
+  .section-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  section {
+    margin-bottom: 3.5rem;
+  }
+
+  /* Impact grid */
+  .impact-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  @media (max-width: 520px) {
+    .impact-grid { grid-template-columns: 1fr 1fr; }
+    .impact-grid .impact-card:last-child { grid-column: 1 / -1; }
+  }
+
+  .impact-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+  }
+
+  .impact-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+
+  .impact-label {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  /* Achievement cards */
+  .achievement {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 12px;
+  }
+
+  .achievement-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 0.75rem;
+  }
+
+  .achievement-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .achievement h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.35;
+  }
+
+  .achievement-body {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    padding-left: 48px;
+  }
+
+  .achievement-result {
+    margin-left: 48px;
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 0.6rem 0.875rem;
+    font-size: 13px;
+    color: var(--text);
+  }
+
+  .achievement-result span {
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 1rem;
+    padding-left: 48px;
+  }
+
+  .tag {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 100px;
+  }
+
+  .tag-teal   { background: var(--teal-bg);   color: var(--teal); }
+  .tag-purple { background: var(--purple-bg); color: var(--purple); }
+  .tag-amber  { background: var(--amber-bg);  color: var(--amber); }
+  .tag-coral  { background: var(--coral-bg);  color: var(--coral); }
+
+  /* Responsibilities grid */
+  .resp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  @media (max-width: 520px) {
+    .resp-grid { grid-template-columns: 1fr; }
+  }
+
+  .resp-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+  }
+
+  .resp-card-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 10px;
+  }
+
+  .resp-card ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .resp-card li {
+    font-size: 13px;
+    color: var(--muted);
+    padding-left: 14px;
+    position: relative;
+  }
+
+  .resp-card li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--border);
+    font-size: 11px;
+    top: 1px;
+  }
+
+  /* Next steps */
+  .next-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .next-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.875rem 1.125rem;
+    font-size: 14px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .next-item::before {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  hr.divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 3rem 0;
+  }
+
+  .footer-note {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+    padding-top: 2rem;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <p class="header-label">Обґрунтування підвищення</p>
+    <h1>Зайнятості та досягнення</h1>
+    <p class="header-sub">За <strong>3 місяці</strong> на посаді — роль <strong>Creative Automation Owner</strong>.</p>
+  </div>
+
+  <!-- Impact -->
+  <section>
+    <p class="section-title">Вплив у цифрах</p>
+    <div class="impact-grid">
+      <div class="impact-card">
+        <div class="impact-num">4 дні</div>
+        <div class="impact-label">заблокованого продакшну — вирішено оперативно</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-num">~90%</div>
+        <div class="impact-label">задач у креобілдері — я стейкхолдер</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-num">Вся команда</div>
+        <div class="impact-label">дизайну змінила спосіб роботи</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Achievements -->
+  <section>
+    <p class="section-title">Ключові досягнення</p>
+
+    <div class="achievement">
+      <div class="achievement-header">
+        <div class="achievement-icon" style="background:#fef9ec;">⚡</div>
+        <h3>Антикризова міграція автоматизації (n8n → власний сервіс)</h3>
+      </div>
+      <p class="achievement-body">n8n впав на 4 дні, продакшн стояв. Я оперативно перемігрував автоматизацію по <strong>Sora</strong>, додав підтримку нової моделі Клінга та перейшов з послідовної генерації на паралельну — значно пришвидшивши роботу.</p>
+      <div class="achievement-result">
+        <span>Результат</span>
+        Продакшн розблоковано, нові можливості, вища швидкість генерації.
+      </div>
+      <div class="tags">
+        <span class="tag tag-coral">Кризове рішення</span>
+        <span class="tag tag-teal">Оптимізація швидкості</span>
+        <span class="tag tag-teal">Нові можливості продакшну</span>
+      </div>
+    </div>
+
+    <div class="achievement">
+      <div class="achievement-header">
+        <div class="achievement-icon" style="background:#f0f4ff;">🤖</div>
+        <h3>AI-система збору фідбеку користувачів</h3>
+      </div>
+      <p class="achievement-body">Розробив і впровадив систему, що автоматично збирає фідбек, передає повний контекст, оцінює критичність кожного запиту, фільтрує за кількістю звернень та об'єднує схожі. <a href="https://www.notion.so/skelar/18e88acff7dd4f0a878c9b564b16c167?v=6567689d802946fb8fca17d7c1a451af" target="_blank" style="color: var(--purple); text-decoration: underline; font-size: 13px;">→ Переглянути систему</a></p>
+      <div class="achievement-result">
+        <span>Результат</span>
+        Фідбек системно й напряму впливає на продукт і швидкість його розвитку.
+      </div>
+      <div class="tags">
+        <span class="tag tag-purple">Власна ініціатива</span>
+        <span class="tag tag-teal">Автоматизація</span>
+        <span class="tag tag-teal">Data-driven рішення</span>
+      </div>
+    </div>
+
+    <div class="achievement">
+      <div class="achievement-header">
+        <div class="achievement-icon" style="background:#fff1ee;">🛡️</div>
+        <h3>Захист і розвиток креобілдера як продукту</h3>
+      </div>
+      <p class="achievement-body">Захистив рішення перед командою власними аргументами. Стейкхолдер ~90% задач. Веду окрему борду багів. Виявляю критичні проблеми першим і забезпечую швидке виправлення.</p>
+      <div class="achievement-result">
+        <span>Результат</span>
+        Вся команда дизайну працює інакше — менше часу й когнітивки, більше обсягів для бізнесу.
+      </div>
+      <div class="tags">
+        <span class="tag tag-purple">Product ownership</span>
+        <span class="tag tag-amber">QA</span>
+        <span class="tag tag-coral">Бізнес-аргументація</span>
+      </div>
+    </div>
+
+    <div class="achievement">
+      <div class="achievement-header">
+        <div class="achievement-icon" style="background:#eef6ff;">📚</div>
+        <h3>Онбординг і документація для тестових груп</h3>
+      </div>
+      <p class="achievement-body">Щодня протягом тижня перед релізом проводив міти з презентаціями і туторіалами — адаптуючи контент під щоденні зміни продукту. Після релізу — великі міти-туторіали і <a href="https://www.notion.so/skelar/Creo-Builder-32ffe0c4a15b800494a7e2fe33d298ff" target="_blank" style="color: var(--purple); text-decoration: underline; font-size: 13px;">інтерактивний Notion з оглядом кожної кнопки →</a></p>
+      <div class="achievement-result">
+        <span>Результат</span>
+        Кількість однотипних запитань значно зменшилась після запуску Notion-документа.
+      </div>
+      <div class="tags">
+        <span class="tag tag-teal">Зниження навантаження на підтримку</span>
+        <span class="tag tag-purple">User education</span>
+      </div>
+    </div>
+
+    <div class="achievement">
+      <div class="achievement-header">
+        <div class="achievement-icon" style="background:#f0faf5;">🧑‍💻</div>
+        <h3>Вайбкодинг як стратегічний інструмент команди</h3>
+      </div>
+      <p class="achievement-body">Прототипую концепти для точного опису задач розробникам. Тестую неврахованості до старту розробки. Закриваю потреби дизайнерів протягом годин від фідбеку. Гнучко гашу «пожежі» без залучення dev-ресурсу.</p>
+      <div class="achievement-result">
+        <span>Результат</span>
+        Розробники розвантажені, швидкість реакції команди значно вища.
+      </div>
+      <div class="tags">
+        <span class="tag tag-teal">Розвантаження розробників</span>
+        <span class="tag tag-amber">Швидкість реакції</span>
+        <span class="tag tag-purple">Прототипування</span>
+      </div>
+    </div>
+
+  </section>
+
+  <hr class="divider">
+
+  <!-- Responsibilities -->
+  <section>
+    <p class="section-title">Зони відповідальності</p>
+    <div class="resp-grid">
+      <div class="resp-card">
+        <p class="resp-card-title" style="color: var(--purple);">Product Management</p>
+        <ul>
+          <li>Пишу задачі для розробки</li>
+          <li>Пріоритизація в інтересах бізнесу</li>
+          <li>Участь у плануванні спринтів</li>
+          <li>Формулюю та перевіряю гіпотези</li>
+          <li>Пропоную нові фічі від себе</li>
+          <li>Ініціюю процеси з нуля</li>
+          <li>Виявляю «дірки» і тягну їх закриття</li>
+        </ul>
+      </div>
+      <div class="resp-card">
+        <p class="resp-card-title" style="color: var(--teal);">Technical Execution</p>
+        <ul>
+          <li>Міграція автоматизацій з n8n</li>
+          <li>Вайбкодинг рішень і концептів</li>
+          <li>Скрипти для внутрішніх процесів</li>
+          <li>Тестування креобілдера та автоматизацій</li>
+          <li>Розбираю документацію API-сервісів</li>
+        </ul>
+      </div>
+      <div class="resp-card">
+        <p class="resp-card-title" style="color: var(--amber);">Research & Insights</p>
+        <ul>
+          <li>Збираю фідбеки користувачів</li>
+          <li>Залучаю дизайнерів у ресерч</li>
+          <li>Нетворкаю з іншими бізнесами</li>
+          <li>Шукаю альтернативні підходи</li>
+        </ul>
+      </div>
+      <div class="resp-card">
+        <p class="resp-card-title" style="color: var(--coral);">Communication</p>
+        <ul>
+          <li>Синхронізую команди між собою</li>
+          <li>Веду документацію та специфікації</li>
+          <li>Пишу та записую туторіали</li>
+          <li>Вирішую проблеми команди оперативно</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Next -->
+  <section>
+    <p class="section-title">Що далі</p>
+    <div class="next-list">
+      <div class="next-item">Повна міграція всіх автоматизацій з n8n на власний сервіс</div>
+      <div class="next-item">Розвиток AI-системи фідбеку — нові метрики і фільтри</div>
+      <div class="next-item">Масштабування онбординг-матеріалів під нових користувачів</div>
+      <div class="next-item">Продовження розвитку креобілдера як ключового продукту</div>
+    </div>
+  </section>
+
+  <p class="footer-note">Сформовано у квітні 2026 · 3 місяці на посаді · Creative Automation Owner</p>
+
+</div>
+</body>
+</html>
